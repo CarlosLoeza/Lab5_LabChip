@@ -3,19 +3,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*	Author: lab
  *  Partner(s) Name: 
  *	Lab Section:
@@ -33,120 +20,172 @@
 #endif
 
 unsigned char tmpA;
-unsigned char count;
-enum Count_States {Count_Start, Count_Wait, Count_Up, Count_Up_Wait, Count_Down, Count_Down_Wait, Count_Zero, Count_Reset} Count_State;
+unsigned char tmpB;
+unsigned char side;
 
-void Increment_Decrement(){
+enum On_States {On_Start, On_None, On_Held_None, On_PB0, On_Held_PB0, On_PB1, On_Held_PB1, On_PB2, On_Held_PB2, On_PB3, On_Held_PB3, On_PB4, On_Held_PB4, On_PB5, On_Held_PB5, On_Off} On_State;
 
-    switch(Count_State){
-	case Count_Start:
-	    Count_State = Count_Wait;
-	    break;
-	case Count_Wait:
-	    if(tmpA == 0){
-		Count_State = Count_Wait;
-	    } else if(tmpA == 0x01){
-		Count_State = Count_Up;
-	    } else if(tmpA == 0x02){
-		Count_State = Count_Down;
-	    } else if(tmpA == 0x03){
-		Count_State = Count_Zero;
+void Festive(){
+
+    switch(On_State){
+        case On_Start:
+            On_State = On_None;
+            break;
+        case On_None:
+            if(tmpA)
+                On_State = On_Held_None;
+            else if(!tmpA)
+                On_State = On_None;
+            break;
+        case On_Held_None:
+            if(tmpA)
+                On_State = On_Held_None;
+            else if(!tmpA)
+                On_State = On_PB0;
+            break;
+        case On_PB0:
+            if(tmpA){
+                On_State = On_Held_PB0;
+	  	tmpB = 0x01;
 	    }
-	    break;
-	case Count_Up:
-	    if(tmpA == 0x01){
-	        Count_State = Count_Up_Wait;
-	    } else if (tmpA == 0x02){
-	   	Count_State = Count_Down;
-	    } else if(tmpA == 0x03){
-		Count_State = Count_Zero;
-	    } else if(tmpA == 0){
-		Count_State = Count_Wait;
+            else if (!tmpA)
+                On_State = On_PB0;
+            break;
+        case On_Held_PB0:
+            if(tmpA)
+                On_State = On_Held_PB0;
+            else if(!tmpA)
+                On_State = On_PB1;
+            break;
+        case On_PB1:
+            if(tmpA){
+                On_State = On_Held_PB1;
+	    	tmpB = 0x03;
 	    }
-	    break;
-	case Count_Up_Wait:
-	    if(tmpA == 0){
-		Count_State = Count_Wait;
-	    }
-	    else if(tmpA == 0x01){
-		Count_State = Count_Up_Wait;
-	    }else if (tmpA == 0x02){
-		Count_State = Count_Down;
-	    } else if (tmpA == 0x03){
-		Count_State = Count_Zero;
-	    } 
-	    break;
-	case Count_Down:
-	    if(tmpA == 0x01){
-	        Count_State = Count_Up;
-	    } else if(tmpA == 0x02){
-		Count_State = Count_Down_Wait;
-  	    } else if(tmpA == 0x03){
-		Count_State = Count_Zero;
-	    } else if(tmpA == 0){
-		Count_State = Count_Wait;
-	    }
-  	    break;
-	case Count_Down_Wait:
-	    if(tmpA ==0){
-		Count_State = Count_Wait;
-	    }
-	    else if(tmpA == 0x01){ 
-                Count_State = Count_Up;
-            } else if (tmpA == 0x02){ 
-                Count_State = Count_Down_Wait;
-            } else if (tmpA == 0x03){ 
-                Count_State = Count_Zero;
-            }
-	    break;
-	case Count_Zero:
-	    if(tmpA == 0x03){
-		Count_State = Count_Zero;
-	    }
-	    else if(tmpA == 0x01){
-		Count_State = Count_Up;
-	    } else if(tmpA ==0x02){
-		Count_State = Count_Down;
-	    }else if(tmpA == 0){
-		Count_State = Count_Wait;
-	    }
-	    break;
-	default:
-	    Count_State = Count_State;
-	    break;
+            else if(!tmpA)
+                On_State = On_PB1;
+            break;
+        case On_Held_PB1:
+            if(tmpA)
+                On_State = On_Held_PB1;
+            else if(!tmpA)
+                On_State = On_PB2;
+            break;
+        case On_PB2:
+            if(tmpA){
+                On_State = On_Held_PB2;
+		tmpB = 0x07;
+            } else if(!tmpA)
+                On_State = On_PB2;
+            break;
+        case On_Held_PB2:
+            if(tmpA)
+                On_State = On_Held_PB2;
+            else if(!tmpA)
+                On_State = On_PB3;
+            break;
+        case On_PB3:
+            if(tmpA){
+                On_State = On_Held_PB3;
+		tmpB = 0x0F;
+            } else if(!tmpA)
+                On_State = On_PB3;
+            break;
+        case On_Held_PB3:
+            if(tmpA)
+                On_State = On_Held_PB3;
+            else if(!tmpA)
+                On_State = On_PB4;
+            break;
+        case On_PB4:
+            if(tmpA){
+                On_State = On_Held_PB4;
+		tmpB = 0x1F;
+            } else if(!tmpA)
+                On_State = On_PB4;
+            break;
+        case On_Held_PB4:
+            if(tmpA)
+                On_State = On_Held_PB4;
+            else if(!tmpA)
+                On_State = On_PB5;
+            break;
+        case On_PB5:
+            if(tmpA){
+                On_State = On_Held_PB5;
+	    	tmpB = 0x3F;
+            } else if(!tmpA)
+                On_State = On_PB5;
+            break;
+        case On_Held_PB5:
+            if(tmpA)
+                On_State = On_Held_PB5;
+            else if(!tmpA)
+                On_State = On_None;
+            break;
+        default:
+            On_State = On_None;
+            break; 
+
     }
-
-    switch(Count_State){
-	case Count_Up:
-	    if(count <9){
-		count = count+1;
-	    }
-	    break;
-	case Count_Down:
-	    if(count > 0){
-		count = count-1;;
-	    }
-	    break;
-   	case Count_Zero:
-	    count = 0;
-	    break;
+    
+    switch(On_State){
+        case On_None:
+            tmpB = 0x00;
+            break;
+        case On_PB0:
+            if(side)
+                tmpB = 0x01;
+            else if(!side)
+                tmpB = 0x20;
+            break;
+        case On_PB1:
+            if(side)
+                tmpB = 0x03;
+            else if(!side)
+                tmpB = 0x30;
+            break;
+        case On_PB2:
+            if(side)
+                tmpB = 0x07;
+            else if(!side)
+                tmpB = 0x38;
+            break;
+        case On_PB3:
+            if(side)
+                tmpB = 0x0F;
+            else if(!side)
+                tmpB = 0x3C;
+            break;
+        case On_PB4:
+            if(side)
+                tmpB = 0x1F;
+            else if(!side)
+                tmpB = 0x3D;
+            break;
+        case On_PB5:
+            tmpB = 0x3F;
+            side = ~side;
+            break;
     }
-
-    PORTC = count;
+    PORTB = tmpB;
 }
+    
 
 int main(void)
 {
     // PORTA: input   PORTC: output
-    DDRA = 0x00; PORTA = 0xFF; 
-    DDRC = 0xFF; PORTC = 0x00; 
-    count = 7;
+    DDRA = 0x00; PORTA = 0xFF;
+    DDRB = 0xFF; PORTB = 0x00;
     
-    Count_State = Count_Wait; 
-    while (1) 
+    tmpB = 0x00;   
+    side = 1; 
+    On_State = On_None;
+    while (1)
     {
-	tmpA = ~PINA & 0x03;
-	Increment_Decrement();
+        tmpA = ~PINA & 0x03;
+        Festive();
     }
 }
+
 
